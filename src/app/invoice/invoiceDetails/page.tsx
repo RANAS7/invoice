@@ -15,13 +15,17 @@ export default function InvoicePage() {
   useEffect(() => {
     const fetchInvoice = async () => {
       try {
-        if (!invoiceNo) {
-          setError("No invoice number provided");
-          return;
+        let url = "/api/invoice";
+        let params: any = {};
+
+        if (invoiceNo) {
+          url += `/?invoiceNo=${invoiceNo}`;
+        } else {
+          params.invoiceNo = invoiceNo;
         }
 
-        const res = await axiosInstance.get(`/api/invoice/`, {
-          params: { invoiceNo },
+        const res = await axiosInstance.get(url, {
+          params,
         });
 
         setInvoiceDetails(res.data);

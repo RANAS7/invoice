@@ -1,3 +1,4 @@
+import { handleDownload, handlePrint } from "@/utils/invoiceUtils";
 import React from "react";
 
 interface InvoiceData {
@@ -22,24 +23,30 @@ interface InvoiceProps {
   invoiceData: InvoiceData | null;
 }
 
-const Invoice: React.FC<InvoiceProps> = ({ invoiceData }) => {
+const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F7F7F7]">
+    <div
+      id="invoiceDetails"
+      className="flex justify-center items-center min-h-screen bg-[#F7F7F7]"
+    >
       <div className="w-[800px] bg-[#FFC5C5] border border-black p-6 rounded-lg shadow-lg">
         {/* Header */}
         <div className="flex  flex-col justify-between items-center">
-          <h1 className="text-2xl font-bold text-[#333]">MSP Solution</h1>
+          <h1 className="text-2xl font-bold text-[#333]">
+            MSP Solution Pvt. Ltd.
+          </h1>
           <p className="text-[#333]">Kathmandu, Nepal</p>
           <p className="text-[#333]">Invoice</p>
         </div>
 
         <div className="flex justify-between">
           <p className="text-sm text-[#333]">
-            Invoice No:{" "}
+            <span className="font-bold">Invoice No: </span>
             {invoiceData ? formatInvoiceNumber(invoiceData.invoiceNo) : ""}
           </p>
           <p className="text-sm text-[#333]">
-            Date: {invoiceData?.invoiceDate || "N/A"}
+            <span className="font-bold">Date:</span>{" "}
+            {invoiceData?.invoiceDate || "N/A"}
           </p>
         </div>
 
@@ -47,10 +54,12 @@ const Invoice: React.FC<InvoiceProps> = ({ invoiceData }) => {
         <div className="mt-6">
           {/* <h2 className="text-lg font-bold text-[#333]">Customer Details</h2> */}
           <p className="text-[#333]">
-            M/s: {invoiceData?.customerName || "N/A"}
+            <span className="font-bold">M/s:</span>{" "}
+            {invoiceData?.customerName || "N/A"}
           </p>
           <p className="text-[#333]">
-            Address: {invoiceData?.customerAddress || "N/A"}
+            <span className="font-bold">Address:</span>{" "}
+            {invoiceData?.customerAddress || "N/A"}
           </p>
         </div>
 
@@ -59,7 +68,7 @@ const Invoice: React.FC<InvoiceProps> = ({ invoiceData }) => {
           <table className="mt-6 w-full border-collapse border border-black">
             <thead>
               <tr className="bg-[#FFC5C5]">
-                <th className="border border-black p-2 text-[#333]">#</th>
+                <th className="border border-black p-2 text-[#333]">S.N.</th>
                 <th className="border border-black p-2 text-[#333]">
                   Description
                 </th>
@@ -73,20 +82,20 @@ const Invoice: React.FC<InvoiceProps> = ({ invoiceData }) => {
             <tbody>
               {invoiceData.invoiceItems.map((item, index) => (
                 <tr key={item.id}>
-                  <td className="border text-black border-black p-2">
+                  <td className="border text-black border-black p-2 text-center">
                     {index + 1}
                   </td>
                   <td className="border text-black border-black p-2">
                     {item.description}
                   </td>
-                  <td className="border text-black border-black p-2">
+                  <td className="border text-black border-black p-2 text-center">
                     {item.quantity}
                   </td>
-                  <td className="border text-black border-black p-2">
-                    {item.rate}
+                  <td className="border text-black border-black p-2 text-center">
+                    Rs. {item.rate} /-
                   </td>
-                  <td className="border text-black border-black p-2">
-                    {item.totalAmount}
+                  <td className="border text-black border-black p-2 text-center">
+                    Rs. {item.totalAmount} /-
                   </td>
                 </tr>
               ))}
@@ -100,12 +109,33 @@ const Invoice: React.FC<InvoiceProps> = ({ invoiceData }) => {
 
         {/* Grand Total */}
         <div className="mt-6 text-right">
-          <h3 className="text-lg font-bold text-[#333]">
-            Grand Total: Rs. {invoiceData?.grandTotal || 0}
+          <h3 className="text-md  text-[#333]">
+            <span className="font-bold">Grand Total:</span> Rs.{" "}
+            {invoiceData?.grandTotal || 0}/-
           </h3>
           <p className="text-sm italic text-[#333]">
-            Amount in words:{numberToWords(invoiceData?.grandTotal || 0)}
+            <span className="font-bold">Amount in words: </span>
+            {numberToWords(invoiceData?.grandTotal || 0)
+              .split(" ")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}
           </p>
+        </div>
+
+        {/* Print and Download Buttons */}
+        <div className="flex justify-end mt-6 gap-4">
+          <button
+            className="bg-gray-600 px-3 rounded-sm text-center"
+            onClick={handlePrint}
+          >
+            Print
+          </button>
+          <button
+            className="bg-gray-600 px-3 rounded-sm text-center"
+            onClick={handleDownload}
+          >
+            Download
+          </button>
         </div>
       </div>
     </div>
@@ -180,4 +210,4 @@ function numberToWords(num: number): string {
   return word.trim();
 }
 
-export default Invoice;
+export default InvoiceDetails;
