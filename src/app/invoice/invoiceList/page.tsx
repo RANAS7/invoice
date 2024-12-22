@@ -29,7 +29,7 @@ const InvoicePage = () => {
     return <div>Loading...</div>;
   }
   return (
-    <div>
+    <div className="max-w-4xl mx-auto">
       <InvoiceList invoices={invoices} loading={false} />
     </div>
   );

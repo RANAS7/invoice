@@ -27,28 +27,27 @@ const Invoice: React.FC<InvoiceProps> = ({ invoiceData }) => {
     <div className="flex justify-center items-center min-h-screen bg-[#F7F7F7]">
       <div className="w-[800px] bg-[#FFC5C5] border border-black p-6 rounded-lg shadow-lg">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-[#333]">MSP Solution</h1>
-            <p className="text-[#333]">Kathmandu, Nepal</p>
-            <p className="text-[#333]">Invoice</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-[#333]">
-              Invoice No:{" "}
-              {invoiceData ? formatInvoiceNumber(invoiceData.invoiceNo) : ""}
-            </p>
-            <p className="text-sm text-[#333]">
-              Date: {invoiceData?.invoiceDate || "N/A"}
-            </p>
-          </div>
+        <div className="flex  flex-col justify-between items-center">
+          <h1 className="text-2xl font-bold text-[#333]">MSP Solution</h1>
+          <p className="text-[#333]">Kathmandu, Nepal</p>
+          <p className="text-[#333]">Invoice</p>
+        </div>
+
+        <div className="flex justify-between">
+          <p className="text-sm text-[#333]">
+            Invoice No:{" "}
+            {invoiceData ? formatInvoiceNumber(invoiceData.invoiceNo) : ""}
+          </p>
+          <p className="text-sm text-[#333]">
+            Date: {invoiceData?.invoiceDate || "N/A"}
+          </p>
         </div>
 
         {/* Customer Details */}
         <div className="mt-6">
-          <h2 className="text-lg font-bold text-[#333]">Customer Details</h2>
+          {/* <h2 className="text-lg font-bold text-[#333]">Customer Details</h2> */}
           <p className="text-[#333]">
-            Name: {invoiceData?.customerName || "N/A"}
+            M/s: {invoiceData?.customerName || "N/A"}
           </p>
           <p className="text-[#333]">
             Address: {invoiceData?.customerAddress || "N/A"}

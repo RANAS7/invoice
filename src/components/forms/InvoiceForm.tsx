@@ -102,14 +102,16 @@ export default function InvoiceForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="text-right">
-        <Link href="/invoice/invoiceList">
-          <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            View Previos Invoices
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-4">
+      {/* Button to Navigate to Invoice List */}
+      <div className="w-full flex justify-end mb-4">
+        <Link href="/invoice/invoiceList" legacyBehavior>
+          <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+            View Previous Invoices
           </a>
         </Link>
       </div>
+
       <form
         onSubmit={handleSubmit}
         className="bg-gray-400 p-6 rounded-lg shadow-lg w-full max-w-4xl space-y-6"
