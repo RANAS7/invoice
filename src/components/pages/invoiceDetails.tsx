@@ -125,14 +125,14 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
         {/* Print and Download Buttons */}
         <div className="flex justify-end mt-6 gap-4">
           <button
-            className="bg-gray-600 px-3 rounded-sm text-center"
-            onClick={handlePrint}
+            className="bg-gray-600 px-3 py-2 rounded-sm text-white"
+            onClick={() => handlePrint(invoiceData)}
           >
             Print
           </button>
           <button
             className="bg-gray-600 px-3 rounded-sm text-center"
-            onClick={handleDownload}
+            onClick={() => handleDownload(invoiceData)}
           >
             Download
           </button>

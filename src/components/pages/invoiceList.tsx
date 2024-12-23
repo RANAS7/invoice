@@ -1,31 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GrView } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import axiosInstance from "../instance/axiosInstance";
 
-interface Invoice {
-  id: number;
-  invoiceNo: number;
-  customerName: string;
-  invoiceDate: string;
-  grandTotal: number;
-}
-
 interface InvoiceListProps {
   invoices: Invoice[];
   loading: boolean;
   onSearch: (searchValue: string) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 const InvoiceList: React.FC<InvoiceListProps> = ({
   invoices,
   loading,
-  onSearch,
+  currentPage,
+  totalPages,
+  onPageChange,
 }) => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Invoice[]>([]);
+
+  useEffect(() => {
+    if (searchValue !== "") {
+      handleSearch();
+    }
+  }, [searchValue]);
 
   const handleViewInvoice = (invoiceNo: number) => {
     router.push(`/invoice/invoiceDetails?invoiceNo=${invoiceNo}`);
@@ -170,6 +173,26 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             )}
           </tbody>
         </table>
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+            className="px-4 py-2 bg-gray-600 rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+            className="px-4 py-2 bg-gray-600 rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
