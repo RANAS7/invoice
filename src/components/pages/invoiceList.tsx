@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { GrView } from "react-icons/gr";
+import { GrFormPrevious, GrView } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import axiosInstance from "../instance/axiosInstance";
+import { MdOutlineNavigateNext } from "react-icons/md";
+
+interface Invoice {
+  id: string;
+  invoiceNo: number;
+  customerName: string;
+  customerAddress: string;
+  invoiceDate: string;
+  grandTotal: number;
+  invoiceItems: InvoiceItem[];
+}
+
+interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  rate: number;
+  totalAmount: number;
+}
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -180,9 +199,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             disabled={currentPage === 0}
             className="px-4 py-2 bg-gray-600 rounded-lg disabled:opacity-50"
           >
-            Previous
+            <GrFormPrevious />{" "}
           </button>
-          <span className="text-sm">
+          <span className="text-sm text-black">
             Page {currentPage + 1} of {totalPages}
           </span>
           <button
@@ -190,7 +209,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             disabled={currentPage === totalPages - 1}
             className="px-4 py-2 bg-gray-600 rounded-lg disabled:opacity-50"
           >
-            Next
+            <MdOutlineNavigateNext />
           </button>
         </div>
       </div>
