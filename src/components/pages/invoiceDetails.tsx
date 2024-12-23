@@ -1,5 +1,7 @@
 import { handleDownload, handlePrint } from "@/utils/invoiceUtils";
 import React from "react";
+import { GrFormPrevious } from "react-icons/gr";
+import { useRouter } from "next/navigation";
 
 interface InvoiceData {
   id: string;
@@ -24,11 +26,23 @@ interface InvoiceProps {
 }
 
 const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
+  const router = useRouter();
   return (
     <div
       id="invoiceDetails"
-      className="flex justify-center items-center min-h-screen bg-[#F7F7F7]"
+      className="flex flex-col justify-center items-center min-h-screen bg-[#F7F7F7]"
     >
+      <div className="w-[800px]">
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center text-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+          >
+            <GrFormPrevious className="mr-2" />
+            Back
+          </button>
+        </div>
+      </div>
       <div className="w-[800px] bg-[#FFC5C5] border border-black p-6 rounded-lg shadow-lg">
         {/* Header */}
         <div className="flex  flex-col justify-between items-center">

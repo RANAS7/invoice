@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GrFormPrevious, GrView } from "react-icons/gr";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import axiosInstance from "../instance/axiosInstance";
 import { MdOutlineNavigateNext } from "react-icons/md";
 
@@ -71,8 +70,17 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
+    <div className="flex items-center min-h-screen bg-gray-100 p-4">
       <div className="p-6 bg-[#F7F7F7] max-w-4xl w-full mx-auto rounded-lg shadow-lg">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center text-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+          >
+            <GrFormPrevious className="mr-2" />
+            Back
+          </button>
+        </div>
         <h1 className="text-3xl font-bold mb-6 text-center text-[#333]">
           Invoice List
         </h1>
@@ -218,3 +226,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 };
 
 export default InvoiceList;
+
+function onSearch(_data: any) {
+  throw new Error("Function not implemented.");
+}
