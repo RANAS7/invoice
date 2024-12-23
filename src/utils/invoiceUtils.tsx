@@ -1,5 +1,6 @@
 import { InvoiceData } from "@/components/types/invoice";
 import jsPDF from "jspdf";
+const convertor = require("number-to-words");
 
 // invoiceUtils.ts
 export const handlePrint = (invoiceData: InvoiceData | null) => {
@@ -26,27 +27,32 @@ export const handlePrint = (invoiceData: InvoiceData | null) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice</title>
+  <title>Invoice Details</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background-color: #F7F7F7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
     }
-    #invoiceDetails {
-      background-color: #FFC5C5;
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #F7F7F7;
+    }
+    .invoice {
       width: 800px;
+      background-color: #FFC5C5;
       border: 1px solid black;
       padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
     .header {
       text-align: center;
+      margin-bottom: 16px;
     }
     .header h1 {
       font-size: 24px;
@@ -60,21 +66,18 @@ export const handlePrint = (invoiceData: InvoiceData | null) => {
     .details {
       display: flex;
       justify-content: space-between;
-      margin: 16px 0;
+      margin-top: 16px;
     }
     .details p {
       font-size: 14px;
       color: #333;
     }
-    .customer-details {
+    .customer {
       margin-top: 24px;
     }
-    .customer-details p {
+    .customer p {
+      font-size: 14px;
       color: #333;
-      margin: 4px 0;
-    }
-    .customer-details .font-bold {
-      font-weight: bold;
     }
     table {
       width: 100%;
@@ -87,68 +90,109 @@ export const handlePrint = (invoiceData: InvoiceData | null) => {
     th, td {
       padding: 8px;
       text-align: center;
+      color: black;
     }
     th {
       background-color: #FFC5C5;
-      color: #333;
-    }
-    td {
-      color: black;
-    }
-    .grand-total {
       font-weight: bold;
-      font-size: 18px;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+    .footer div {
+      text-align: center;
+    }
+    .footer hr {
+      border: 1px solid black;
+      width: 100%;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .buttons button {
+      padding: 8px 16px;
+      background-color: #666;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .buttons button:hover {
+      background-color: #555;
     }
   </style>
 </head>
 <body>
-  <div id="invoiceDetails">
-    <div class="header">
-      <h1>MSP Solution Pvt. Ltd.</h1>
-      <p>Kathmandu, Nepal</p>
-      <p>Invoice</p>
-    </div>
-    <div class="details">
-      <p>
-        <span class="font-bold">Invoice No:</span>
-        ${formatInvoiceNumber(invoiceData.invoiceNo)}
-      </p>
-      <p>
-        <span class="font-bold">Date:</span>
-        ${invoiceData.invoiceDate}
-      </p>
-    </div>
-    <div class="customer-details">
-      <p>
-        <span class="font-bold">M/s:</span> ${invoiceData.customerName}
-      </p>
-      <p>
-        <span class="font-bold">Address:</span> ${invoiceData.customerAddress}
-      </p>
-    </div>
-    <table>
-      <thead>
+  <div class="container">
+    <div class="invoice">
+      <!-- Header -->
+      <div class="header">
+        <h1>MSP Solution Pvt. Ltd.</h1>
+        <p>Kathmandu, Nepal</p>
+        <p>Invoice</p>
+      </div>
+
+      <!-- Invoice Details -->
+      <div class="details">
+        <p><strong>Invoice No: </strong>${formatInvoiceNumber(
+          invoiceData.invoiceNo
+        )}</p>
+        <p><strong>Date:</strong> ${invoiceData.invoiceDate}</p>
+      </div>
+
+      <!-- Customer Details -->
+      <div class="customer">
+        <p><strong>M/s:</strong> ${invoiceData.customerName}</p>
+        <p><strong>Address:</strong> ${invoiceData.customerAddress}</p>
+      </div>
+
+      <!-- Items Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>S.N.</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+${itemsHTML}         
+        </tbody>
+        <tfoot>
         <tr>
-          <th>S.N.</th>
-          <th>Description</th>
-          <th>Quantity</th>
-          <th>Rate</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${itemsHTML}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="4" class="grand-total">Grand Total</td>
-          <td class="grand-total">Rs. ${invoiceData.grandTotal} /-</td>
+          <td colspan="2">
+              <i><strong>Amount in words: </strong>${convertor.toWords(
+                invoiceData.grandTotal
+              )}</i>
+            </td>
+            <td colspan="2"><strong>Grand Total</strong></td>
+            <td>Rs. ${invoiceData.grandTotal}/-</td>
         </tr>
       </tfoot>
-    </table>
+      </table>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div>
+          <hr>
+          <p>Customer's Sign</p>
+        </div>
+        <div>
+          <hr>
+          <p>For: MSP Solution</p>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
-</html>`;
+</html>
+`;
 
   const printWindow = window.open("", "_blank");
   printWindow?.document.write(printContent);

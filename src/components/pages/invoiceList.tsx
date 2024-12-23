@@ -25,7 +25,6 @@ interface InvoiceItem {
 interface InvoiceListProps {
   invoices: Invoice[];
   loading: boolean;
-  onSearch: (searchValue: string) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -63,7 +62,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       );
       const data = response.data;
       setSearchResult(data);
-      onSearch(data);
     } catch (error) {
       console.error("Error searching invoices:", error);
     }
@@ -226,7 +224,3 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 };
 
 export default InvoiceList;
-
-function onSearch(_data: any) {
-  throw new Error("Function not implemented.");
-}

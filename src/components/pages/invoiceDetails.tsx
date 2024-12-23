@@ -2,6 +2,7 @@ import { handleDownload, handlePrint } from "@/utils/invoiceUtils";
 import React from "react";
 import { GrFormPrevious } from "react-icons/gr";
 import { useRouter } from "next/navigation";
+const convertor = require("number-to-words");
 
 interface InvoiceData {
   id: string;
@@ -32,7 +33,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
       id="invoiceDetails"
       className="flex flex-col justify-center items-center min-h-screen bg-[#F7F7F7]"
     >
-      <div className="w-[800px]">
+      <div className="w-[800px] flex justify-between">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => router.back()}
@@ -40,6 +41,21 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
           >
             <GrFormPrevious className="mr-2" />
             Back
+          </button>
+        </div>
+        {/* Print and Download Buttons */}
+        <div className="flex justify-end mb-6 gap-4">
+          <button
+            className="bg-gray-600 px-3 py-2 rounded-sm text-white"
+            onClick={() => handlePrint(invoiceData)}
+          >
+            Print
+          </button>
+          <button
+            className="bg-gray-600 px-3 rounded-sm text-center"
+            onClick={() => handleDownload(invoiceData)}
+          >
+            Download
           </button>
         </div>
       </div>
@@ -55,11 +71,11 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
 
         <div className="flex justify-between">
           <p className="text-sm text-[#333]">
-            <span className="font-bold">Invoice No: </span>
+            <span className="font-semibold">Invoice No: </span>
             {invoiceData ? formatInvoiceNumber(invoiceData.invoiceNo) : ""}
           </p>
           <p className="text-sm text-[#333]">
-            <span className="font-bold">Date:</span>{" "}
+            <span className="font-semibold">Date:</span>{" "}
             {invoiceData?.invoiceDate || "N/A"}
           </p>
         </div>
@@ -68,11 +84,11 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
         <div className="mt-6">
           {/* <h2 className="text-lg font-bold text-[#333]">Customer Details</h2> */}
           <p className="text-[#333]">
-            <span className="font-bold">M/s:</span>{" "}
+            <span className="font-semibold">M/s:</span>{" "}
             {invoiceData?.customerName || "N/A"}
           </p>
           <p className="text-[#333]">
-            <span className="font-bold">Address:</span>{" "}
+            <span className="font-semibold">Address:</span>{" "}
             {invoiceData?.customerAddress || "N/A"}
           </p>
         </div>
@@ -108,11 +124,40 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
                   <td className="border text-black border-black p-2 text-center">
                     Rs. {item.rate} /-
                   </td>
+
                   <td className="border text-black border-black p-2 text-center">
                     Rs. {item.totalAmount} /-
                   </td>
                 </tr>
               ))}
+              <tr>
+                <td
+                  colSpan={2}
+                  className=" border text-black border-black p-2 text-center"
+                >
+                  <p className="text-sm italic text-black">
+                    <span className="font-bold">Amount in words: </span>
+                    {invoiceData
+                      ? convertor
+                          .toWords(invoiceData.grandTotal)
+                          .replace(
+                            /\b\w+\b/g,
+                            (word: any) =>
+                              word.charAt(0).toUpperCase() + word.slice(1)
+                          )
+                      : ""}
+                  </p>
+                </td>
+                <td
+                  colSpan={2}
+                  className="border font-semibold text-black border-black p-2 text-center"
+                >
+                  Grand Total
+                </td>
+                <td colSpan={1} className="text-black text-center border-black">
+                  Rs. {invoiceData?.grandTotal || 0}/-
+                </td>
+              </tr>
             </tbody>
           </table>
         ) : (
@@ -120,36 +165,15 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
             No items available in this invoice.
           </p>
         )}
-
-        {/* Grand Total */}
-        <div className="mt-6 text-right">
-          <h3 className="text-md  text-[#333]">
-            <span className="font-bold">Grand Total:</span> Rs.{" "}
-            {invoiceData?.grandTotal || 0}/-
-          </h3>
-          <p className="text-sm italic text-[#333]">
-            <span className="font-bold">Amount in words: </span>
-            {numberToWords(invoiceData?.grandTotal || 0)
-              .split(" ")
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ")}
-          </p>
-        </div>
-
-        {/* Print and Download Buttons */}
-        <div className="flex justify-end mt-6 gap-4">
-          <button
-            className="bg-gray-600 px-3 py-2 rounded-sm text-white"
-            onClick={() => handlePrint(invoiceData)}
-          >
-            Print
-          </button>
-          <button
-            className="bg-gray-600 px-3 rounded-sm text-center"
-            onClick={() => handleDownload(invoiceData)}
-          >
-            Download
-          </button>
+        <div className="flex justify-between text-black mt-10">
+          <div className="flex flex-col gap-3">
+            <hr className="border-black border-1 w-full" />
+            <p>Customer's Sign</p>
+          </div>
+          <div className="flex flex-col gap-3">
+            <hr className="border-black border- w-full" />
+            <p>For: MSP Solution</p>
+          </div>
         </div>
       </div>
     </div>
@@ -160,68 +184,5 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
 const formatInvoiceNumber = (invoiceNo: number): string => {
   return invoiceNo.toString().padStart(3, "0");
 };
-
-function numberToWords(num: number): string {
-  if (num === 0) return "zero";
-
-  const belowTwenty = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-    "fourteen",
-    "fifteen",
-    "sixteen",
-    "seventeen",
-    "eighteen",
-    "nineteen",
-  ];
-
-  const tens = [
-    "twenty",
-    "thirty",
-    "forty",
-    "fifty",
-    "sixty",
-    "seventy",
-    "eighty",
-    "ninety",
-  ];
-
-  const thousands = ["", "thousand", "million", "billion"];
-
-  function helper(n: number): string {
-    if (n === 0) return "";
-    if (n < 20) return belowTwenty[n - 1] + " ";
-    if (n < 100) return tens[Math.floor(n / 10) - 2] + " " + helper(n % 10);
-    if (n < 1000)
-      return (
-        belowTwenty[Math.floor(n / 100) - 1] + " hundred " + helper(n % 100)
-      );
-    return "";
-  }
-
-  let word = "";
-  let index = 0;
-
-  while (num > 0) {
-    if (num % 1000 !== 0) {
-      word = helper(num % 1000) + thousands[index] + " " + word;
-    }
-    num = Math.floor(num / 1000);
-    index++;
-  }
-
-  return word.trim();
-}
 
 export default InvoiceDetails;
