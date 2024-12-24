@@ -150,7 +150,7 @@ export const handlePrint = (invoiceData: InvoiceData | null) => {
             <th>Description</th>
             <th>Quantity</th>
             <th class="w-32">Rate</th>
-            <th class="w-32">Total Amount</th>
+            <th class="w-32">Amount</th>
           </tr>
         </thead>
         <tbody>

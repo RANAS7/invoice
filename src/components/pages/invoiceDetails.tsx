@@ -105,7 +105,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
                   Rate
                 </th>
                 <th className="border border-black p-2 text-[#333] w-32">
-                  Total Amount
+                  Amount
                 </th>
               </tr>
             </thead>
