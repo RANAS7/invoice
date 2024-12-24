@@ -1,4 +1,4 @@
-import { handleDownload, handlePrint } from "@/utils/invoiceUtils";
+import { handlePrint } from "@/utils/invoiceUtils";
 import React from "react";
 import { GrFormPrevious } from "react-icons/gr";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
   return (
     <div
       id="invoiceDetails"
-      className="flex flex-col justify-center items-center min-h-screen bg-[#F7F7F7]"
+      className="flex py-10 flex-col justify-center items-center min-h-screen bg-[#F7F7F7]"
     >
       <div className="w-[800px] flex justify-between">
         <div className="flex items-center justify-between mb-6">
@@ -46,29 +46,23 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
         {/* Print and Download Buttons */}
         <div className="flex justify-end mb-6 gap-4">
           <button
-            className="bg-gray-600 px-3 py-2 rounded-sm text-white"
+            className="bg-gray-500 px-3 py-2 rounded-sm text-white hover:bg-gray-800"
             onClick={() => handlePrint(invoiceData)}
           >
             Print
-          </button>
-          <button
-            className="bg-gray-600 px-3 rounded-sm text-center"
-            onClick={() => handleDownload(invoiceData)}
-          >
-            Download
           </button>
         </div>
       </div>
       <div className="w-[800px] bg-[#FFC5C5] border border-black p-6 rounded-lg shadow-lg">
         {/* Header */}
         <div className="flex  flex-col justify-between items-center">
-          <h1 className="text-2xl font-bold text-[#333]">
+          <h1 className="text-3xl font-bold text-[#333]">
             MSP Solution Pvt. Ltd.
           </h1>
           <p className="text-[#333]">Kathmandu, Nepal</p>
           <p className="text-[#333]">Invoice</p>
         </div>
-
+        <hr className="border-t border-black my-5" />
         <div className="flex justify-between">
           <p className="text-sm text-[#333]">
             <span className="font-semibold">Invoice No: </span>
@@ -98,15 +92,21 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
           <table className="mt-6 w-full border-collapse border border-black">
             <thead>
               <tr className="bg-[#FFC5C5]">
-                <th className="border border-black p-2 text-[#333]">S.N.</th>
+                <th className="border border-black p-2 text-[#333] w-12">
+                  S.N.
+                </th>
                 <th className="border border-black p-2 text-[#333]">
                   Description
                 </th>
                 <th className="border border-black p-2 text-[#333]">
                   Quantity
                 </th>
-                <th className="border border-black p-2 text-[#333]">Rate</th>
-                <th className="border border-black p-2 text-[#333]">Amount</th>
+                <th className="border border-black p-2 text-[#333] w-32">
+                  Rate
+                </th>
+                <th className="border border-black p-2 text-[#333] w-32">
+                  Total Amount
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -165,7 +165,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
             No items available in this invoice.
           </p>
         )}
-        <div className="flex justify-between text-black mt-10">
+        <div className="flex justify-between text-black mt-16">
           <div className="flex flex-col gap-3">
             <hr className="border-black border-1 w-full" />
             <p>Customer's Sign</p>
