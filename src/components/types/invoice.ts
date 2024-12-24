@@ -18,6 +18,8 @@ export interface InvoiceData {
   customerName: string;
   customerAddress: string;
   invoiceDate: string;
+  vatAmount: number;
+  totalAmount: number;
   grandTotal: number;
   invoiceItems: InvoiceItem[];
 }

@@ -158,14 +158,20 @@ ${itemsHTML}
         </tbody>
         <tfoot>
         <tr>
-          <td colspan="2">
+          <td colspan="2" rowSpan="4">
               <i><strong>Amount in words: </strong>${convertor.toWords(
                 invoiceData.grandTotal
               )}</i>
             </td>
-            <td colspan="2"><strong>Grand Total</strong></td>
-            <td>Rs. ${invoiceData.grandTotal}/-</td>
         </tr>
+        <tr><td colspan="2"><strong>Total Amount</strong></td>
+            <td>Rs. ${invoiceData.totalAmount}/-</td></tr>
+
+      <tr><td colspan="2"><strong>Vat 13%</strong></td>
+            <td>Rs. ${invoiceData.vatAmount}/-</td></tr>
+   
+      <tr><td colspan="2"><strong>Grand Total</strong></td>
+            <td>Rs. ${invoiceData.grandTotal}/-</td></tr>
       </tfoot>
       </table>
 

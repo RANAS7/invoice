@@ -7,11 +7,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function InvoiceForm() {
+  const [isVatIncluded, setIsVatIncluded] = useState(false);
   const [invoiceData, setInvoiceData] = useState({
     invoice: {
       invoiceDate: "",
       customerName: "",
       customerAddress: "",
+      totalAmount: 0,
+      vatAmount: 0,
+      grandTotal: 0,
     },
     invoiceItemList: [
       {
@@ -78,15 +82,32 @@ export default function InvoiceForm() {
 
   const handleKeyPress =
     (index: number) => (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Tab" && index === invoiceData.invoiceItemList.length - 1) {
-        addItem();
+      if (
+        e.key === "Tab" &&
+        index === Math.min(15, invoiceData.invoiceItemList.length - 1)
+      ) {
+        if (invoiceData.invoiceItemList.length < 16) {
+          addItem();
+        } else {
+          e.preventDefault(); // Disable adding more items when limit is exceeded
+        }
       }
     };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("/api/invoice/", invoiceData);
+      await axiosInstance.post("/api/invoice/", {
+        invoice: {
+          ...invoiceData.invoice,
+          totalAmount:
+            parseFloat(getTotalAmount()) - parseFloat(getVatAmount()),
+          vatAmount: parseFloat(getVatAmount()),
+          grandTotal: parseFloat(getTotalAmount()),
+        },
+        invoiceItemList: invoiceData.invoiceItemList,
+      });
+      setIsVatIncluded(false);
       toast.success("Invoice created successfully");
       router.push("/invoice/invoiceDetails");
     } catch (error) {
@@ -95,10 +116,23 @@ export default function InvoiceForm() {
     }
   };
 
+  const getVatAmount = () => {
+    const vatRate = 0.13; // VAT rate 13%
+    const subtotal = invoiceData.invoiceItemList.reduce(
+      (total, item) => total + item.rate * item.quantity,
+      0
+    );
+    return (subtotal * vatRate).toFixed(2);
+  };
+
   const getTotalAmount = () => {
-    return invoiceData.invoiceItemList
-      .reduce((total, item) => total + item.rate * item.quantity, 0)
-      .toFixed(2);
+    const subtotal = invoiceData.invoiceItemList.reduce(
+      (total, item) => total + item.rate * item.quantity,
+      0
+    );
+
+    const vatAmount = isVatIncluded ? parseFloat(getVatAmount()) : 0;
+    return (subtotal + vatAmount).toFixed(2);
   };
 
   return (
@@ -224,14 +258,21 @@ export default function InvoiceForm() {
                     </td>
                     <td className="px-4 py-2 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <button
-                          type="button"
-                          onClick={addItem}
-                          className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-white bg-green-600 rounded-full shadow-md hover:bg-green-700 focus:ring-2 focus:ring-green-400"
-                        >
-                          <IoAddCircle size={18} />
-                          Add
-                        </button>
+                        {invoiceData.invoiceItemList.length < 16 && (
+                          <button
+                            type="button"
+                            onClick={addItem}
+                            disabled={invoiceData.invoiceItemList.length === 16}
+                            className={`flex items-center gap-1 px-3 py-2 text-sm font-semibold text-white bg-green-600 rounded-full shadow-md hover:bg-green-700 focus:ring-2 focus:ring-green-400 ${
+                              invoiceData.invoiceItemList.length === 16
+                                ? "cursor-not-allowed opacity-50"
+                                : ""
+                            }`}
+                          >
+                            <IoAddCircle size={18} />
+                            Add
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={removeItem(index)}
@@ -254,11 +295,27 @@ export default function InvoiceForm() {
           </div>
 
           {/* Invoice Total */}
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-semibold">Total</h3>
-            <span className="text-xl font-semibold text-gray-700">
-              ${getTotalAmount()}
-            </span>
+          <div className="flex justify-between items-center my-4">
+            <div className="flex gap-2">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                  checked={isVatIncluded}
+                  onChange={() => setIsVatIncluded(!isVatIncluded)}
+                />
+                <p className="ml-2 text-xl font-semibold mr-4">Vat 13%:</p>
+                <p className="text-xl font-semibold text-gray-700">
+                  {isVatIncluded ? getVatAmount() : "0.00"}
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end items-center">
+              <h3 className="text-xl font-semibold mr-4">Total</h3>
+              <span className="text-xl font-semibold text-gray-700">
+                ${getTotalAmount()}
+              </span>
+            </div>
           </div>
 
           {/* Submit Button */}

@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 const convertor = require("number-to-words");
 
 interface InvoiceData {
+  totalAmount: number;
   id: string;
   invoiceNo: number;
   customerName: string;
   customerAddress: string;
   invoiceDate: string;
+  vatAmount: number;
   grandTotal: number;
   invoiceItems: InvoiceItem[];
 }
@@ -122,17 +124,18 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
                     {item.quantity}
                   </td>
                   <td className="border text-black border-black p-2 text-center">
-                    Rs. {item.rate} /-
+                    Rs. {item.rate.toLocaleString()} /-
                   </td>
 
                   <td className="border text-black border-black p-2 text-center">
-                    Rs. {item.totalAmount} /-
+                    Rs. {item.totalAmount.toLocaleString()} /-
                   </td>
                 </tr>
               ))}
               <tr>
                 <td
                   colSpan={2}
+                  rowSpan={4}
                   className=" border text-black border-black p-2 text-center"
                 >
                   <p className="text-sm italic text-black">
@@ -148,6 +151,40 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
                       : ""}
                   </p>
                 </td>
+              </tr>
+              <tr>
+                <td
+                  colSpan={2}
+                  className="border font-semibold text-black border-black p-2 text-center"
+                >
+                  Total Amount
+                </td>
+                <td
+                  colSpan={1}
+                  className="text-black text-center border border-black"
+                >
+                  Rs.{" "}
+                  {invoiceData?.totalAmount
+                    ? invoiceData.totalAmount.toLocaleString()
+                    : 0}
+                  /-
+                </td>
+              </tr>
+              <tr>
+                <td
+                  colSpan={2}
+                  className="border font-semibold text-black border-black p-2 text-center"
+                >
+                  VAT 13%
+                </td>
+                <td
+                  colSpan={1}
+                  className="text-black border text-center border-black"
+                >
+                  Rs. {(invoiceData?.vatAmount || 0).toLocaleString()}/-
+                </td>
+              </tr>
+              <tr>
                 <td
                   colSpan={2}
                   className="border font-semibold text-black border-black p-2 text-center"
@@ -155,7 +192,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({ invoiceData }) => {
                   Grand Total
                 </td>
                 <td colSpan={1} className="text-black text-center border-black">
-                  Rs. {invoiceData?.grandTotal || 0}/-
+                  Rs. {(invoiceData?.grandTotal || 0).toLocaleString()}/-
                 </td>
               </tr>
             </tbody>
